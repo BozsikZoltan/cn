@@ -34,6 +34,6 @@ app.get('/', (req, res) => {
     res.render('index', {items: inArray});
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log("Node server started");
 });

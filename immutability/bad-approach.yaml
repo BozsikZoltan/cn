@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immutability-bad
+  labels:
+    app: immutability-bad
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immutability-bad
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: immutability-bad
+        tier: frontend
+    spec:
+      containers:
+      - name: immutability-bad
+        image: immutability-bad
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: immutability-bad
+  labels:
+    app: immutability-bad
+    tier: frontend
+spec:
+  type: NodePort
+  selector: 
+    app: immutability-bad
+    tier: frontend
+  ports:
+    - nodePort: 30400
+      port: 8080

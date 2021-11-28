@@ -3,7 +3,10 @@ const bodyParser = require("body-parser");
 const redis = require("redis");
 const app = express();
 const redisPort = 6379
-const client = redis.createClient(redisPort);
+const client = redis.createClient({
+    host: process.env.GET_HOSTS_FROM,
+    port: redisPort
+});
 
 app.set('view engine', 'html');
 
@@ -47,6 +50,6 @@ app.get('/', (req, res) => {
     });
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log("Node server started");
 });

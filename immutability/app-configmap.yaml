@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-    name: app-configmap
-data:
-    redis-service: my-release-redis-master:6379

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immutability-good-multi
+  labels:
+    app: immutability-good-multi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: immutability-good-multi
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: immutability-good-multi
+        tier: frontend
+    spec:
+      containers:
+      - name: immutability-good-multi
+        image: immutability-good
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: GET_HOSTS_FROM
+          value: "$(REDIS_SERVICE_HOST)"
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: immutability-good-multi
+  labels:
+    app: immutability-good-multi
+    tier: frontend
+spec:
+  type: NodePort
+  selector: 
+    app: immutability-good-multi
+    tier: frontend
+  ports:
+    - nodePort: 30201
+      port: 8080

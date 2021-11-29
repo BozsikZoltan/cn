@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immutability-bad-multi
+  labels:
+    app: immutability-bad-multi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: immutability-bad-multi
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: immutability-bad-multi
+        tier: frontend
+    spec:
+      containers:
+      - name: immutability-bad-multi
+        image: immutability-bad
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: immutability-bad-multi
+  labels:
+    app: immutability-bad-multi
+    tier: frontend
+spec:
+  type: NodePort
+  selector: 
+    app: immutability-bad-multi
+    tier: frontend
+  ports:
+    - nodePort: 30401
+      port: 8080

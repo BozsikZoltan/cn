@@ -1,0 +1,16 @@
+<form id='form_set' method="POST" action="/set">
+    <label for="set_text_key">Set key: </label>
+    <input id="set_text_key" type="text" name="set_text_key" required>
+    <input type="submit" value="OK">
+</form>
+<form id='form_increment' method="POST" action="/increment">
+    <label for="increment_text_key">Increment key:</label>
+    <input id="increment_text_key" type="text" name="increment_text_key" required>
+    <input type="submit" value="OK">
+</form>
+<form id='form_decrement' method="POST" action="/decrement">
+    <label for="decrement_text_key">Decrement key:</label>
+    <input id="decrement_text_key" type="text" name="decrement_text_key" required>
+    <input type="submit" value="OK">
+</form>
+<h1 id="head1"><%= items %></h1>

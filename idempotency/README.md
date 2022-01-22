@@ -46,29 +46,20 @@ minikube service <service_name>
 ## Reset deployment
 kubectl rollout restart deployment <deployment_name>
 
-# Hints (from immutability directory)
+# Hints (from idempotecy directory)
 
 ## Run server
 minikube start --vm-driver="virtualbox"
 
 ## Build images
 eval $(minikube docker-env)
-docker build -t immutability-good good-approach/.
-docker build -t immutability-bad bad-approach/.
-
-## Setup Redis server
-kubectl apply -f manifests/redis.yaml
+docker build -t idempotecy-good good-approach/.
+docker build -t idempotecy-bad bad-approach/.
 
 ## Setup deployments for single-single test scenario
-kubectl apply -f manifests/single-good-approach.yaml
-kubectl apply -f manifests/single-bad-approach.yaml
-
-## Setup deployments for multi-multi test scenario
-kubectl apply -f manifests/multi-good-approach.yaml
-kubectl apply -f manifests/multi-bad-approach.yaml
+kubectl apply -f manifests/good-approach.yaml
+kubectl apply -f manifests/bad-approach.yaml
 
 ## Open in browser
-minikube service immutability-good
-minikube service immutability-bad
-minikube service immutability-good-multi
-minikube service immutability-bad-multi
+minikube service idempotecy-good
+minikube service idempotecy-bad

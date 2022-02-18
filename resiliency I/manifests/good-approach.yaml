@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resiliency1-good
+  labels:
+    app: resiliency1-good
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resiliency1-good
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: resiliency1-good
+        tier: frontend
+    spec:
+      containers:
+      - name: resiliency1-good
+        image: resiliency_1-good
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KEY_VALUE_STORE_HOST
+          value: "$(KEY_STORE_SERVICE_HOST)"
+        - name: KEY_VALUE_STORE_PORT
+          value: "$(KEY_STORE_SERVICE_PORT)"
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: resiliency1-good
+  labels:
+    app: resiliency1-good
+    tier: frontend
+spec:
+  type: NodePort
+  selector: 
+    app: resiliency1-good
+    tier: frontend
+  ports:
+    - nodePort: 32200
+      port: 8080

@@ -34,10 +34,8 @@ kubectl get all
 ## List enviromental variables
 kubectl exec <pod_name> -- printenv
 
-kubectl exec <pod_name> -- printenv
-kubectl exec resiliency1-bad -- printenv
-
-
+## Get descripion
+kubectl describe <resource> [resouce_identifier]								# <resource {all, services, deployments, pods,..}; [resouce_identifier] optional, for specific search
 
 ## Delete deployment
 kubectl delete deployment <deployment_name>
@@ -49,10 +47,13 @@ kubectl delete service <service_name>
 kubectl delete pod <pod_name>
 
 ## Open service in browser
-minikube service <service_name>
+minikube service <service_name> [options]									# [options] {--url (only gives the access url)}
 
 ## Reset deployment
 kubectl rollout restart deployment <deployment_name>
+
+## Get application logs from pod
+kubectl logs [options] <pod_name>										# [options] {-f (stream)}
 
 # Hints (from resiliency I directory)
 

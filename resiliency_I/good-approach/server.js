@@ -3,8 +3,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const axios = require('axios');
 const client = axios.create({
-    //baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
-    baseURL: 'http://localhost' + ':' + 7480
+    baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
+    //baseURL: 'http://localhost' + ':' + 7480
 });
 
 app.set('view engine', 'html');
@@ -23,14 +23,14 @@ app.use(bodyParser.urlencoded({
  * Get method
  * */
 app.get('/', async function (req, res) {
-    res.render('index', {items: mapEntriesToString(await getMap())});
+    res.render('index', {items: mapEntriesToString(await withExponentialBackoff(getMap))});
 });
 
 /**
  * Set method
  * */
 app.post('/set', async function (req, res) {
-    await setValue(req.body.set_text_key, req.body.set_text_value);
+    await withExponentialBackoff(setValue, 1, req.body.set_text_key, req.body.set_text_value);
 
     return res.redirect('/');
 });
@@ -40,47 +40,39 @@ app.post('/set', async function (req, res) {
  * */
 app.post('/delete', async function (req, res) {
     const key = req.body.delete_text_key;
-    const map = await getMap();
+    const map = await withExponentialBackoff(getMap);
 
     if (map.has(key)) {
         const previous = map.get(key);
 
-        await deleteKey(key);
+        await withExponentialBackoff(deleteKey, 1, key);
         console.log("(" + key + ") key deleted: " + previous);
     }
 
     return res.redirect('/');
 });
 
-
 /**
  * Async function to get the map form the key-store
  * */
-async function getMap(backoffTime = 1) {
-    const res = await client.get('/get')
-        .then(response => new Map(response.data))
-        .catch(() => {
-            const nextBackoffTime = backoffTime * 2;
-            console.error(nextBackoffTime);
-
-            return new Promise((resolve) =>
-                setTimeout(() => resolve(getMap(nextBackoffTime)), nextBackoffTime * 1000));
+function getMap() {
+    return client.get('/get')
+        .then(response => {
+            const result = new Map(response.data);
+            console.log(result);
+            return result;
         });
-
-    console.log(res)
-    return res;
 }
 
 /**
  * Async function to set key in the key-store
  * */
 async function setValue(key, value) {
-    console.log('Set value invoked!')
+    console.log('Set value invoked!');
     await client.post('/set', {
         "key": key,
         "value": value
-    }).then(response => console.log(response.data)
-    ).catch(error => console.error(error))
+    }).then(response => console.log(response.data));
 }
 
 /**
@@ -90,8 +82,26 @@ async function deleteKey(key) {
     console.log('Delete key invoked!')
     await client.post('/delete', {
         "key": key
-    }).then(response => console.log(response.data)
-    ).catch(error => console.error(error))
+    }).then(response => console.log(response.data))
+}
+
+/**
+ * Generic method for calling with exponential backoff strategy
+ *
+ * @param func: the method what we want to invoke
+ * @param backoffTime: initial time (default 1[sec])
+ * @param args: the parameters for the func
+ * */
+async function withExponentialBackoff(func, backoffTime = 1, ...args) {
+    return await func(...args)
+        .then()
+        .catch(() => {
+            const nextBackoffTime = backoffTime * 2;
+            console.error(nextBackoffTime);
+
+            return new Promise((resolve) =>
+                setTimeout(() => resolve(withExponentialBackoff(func, nextBackoffTime, ...args)), nextBackoffTime * 1000));
+        });
 }
 
 /**
@@ -99,7 +109,7 @@ async function deleteKey(key) {
  * */
 function mapEntriesToString(data) {
     if (data === null || data === undefined) {
-        return
+        return;
     }
 
     return Array

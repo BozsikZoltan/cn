@@ -35,7 +35,7 @@ kubectl get all
 kubectl exec <pod_name> -- printenv
 
 ## Get descripion
-kubectl describe <resource> [resouce_identifier]								# <resource {all, services, deployments, pods,..}; [resouce_identifier] optional, for specific search
+kubectl describe <resource> [resouce_identifier]								# <resource> {all, services, deployments, pods,..}; [resouce_identifier] optional, for specific search
 
 ## Delete deployment
 kubectl delete deployment <deployment_name>
@@ -51,6 +51,9 @@ minikube service <service_name> [options]									# [options] {--url (only gives
 
 ## Reset deployment
 kubectl rollout restart deployment <deployment_name>
+
+## Resize deploment's replicas
+kubectl scale --replicas=0 deployment/<deployment_name>
 
 ## Get application logs from pod
 kubectl logs [options] <pod_name>										# [options] {-f (stream)}
@@ -74,3 +77,10 @@ kubectl apply -f manifests/bad-approach.yaml
 ## Open in browser
 minikube service resiliency1-good
 minikube service resiliency1-bad
+
+## Test exponential backoff (after build & deploy)
+minikube service resiliency1-good				# Open in browser
+kubectl scale --replicas=0 deployment/key-store		# Close the key-store
+give some input in the brower (for example: set key 'c' with value 5)
+kubectl scale --replicas=1 deployment/key-store		# Reopen the key-store
+

@@ -36,7 +36,7 @@ app.post('/set', async function (req, res) {
 });
 
 /**
- * Increment method
+ * Delete method
  * */
 app.post('/delete', async function (req, res) {
     const key = req.body.delete_text_key;
@@ -74,7 +74,7 @@ async function setValue(key, value) {
         "key": key,
         "value": value
     }).then(response => console.log(response.data)
-    ).catch(error => console.error(error))
+    ).catch(error => console.error(error));
 }
 
 /**
@@ -84,7 +84,7 @@ async function deleteKey(key) {
     await client.post('/delete', {
         "key": key
     }).then(response => console.log(response.data)
-    ).catch(error => console.error(error))
+    ).catch(error => console.error(error));
 }
 
 /**
@@ -92,7 +92,7 @@ async function deleteKey(key) {
  * */
 function mapEntriesToString(data) {
     if (data === null) {
-        return
+        return;
     }
 
     return Array

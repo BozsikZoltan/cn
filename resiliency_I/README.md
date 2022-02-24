@@ -87,3 +87,13 @@ kubectl scale --replicas=0 deployment/key-store		# Close the key-store
 give some input in the brower (for example: set key 'c' with value 5)
 kubectl scale --replicas=1 deployment/key-store		# Reopen the key-store
 
+## Test circiut-braker (after build & deploy)
+minikube service resiliency1-good-cb				# Open in browser
+kubectl logs -f pod/<pod_name>				# Open in other terminal
+make same call get/set/delete
+kubectl scale --replicas=0 deployment/key-store		# Close the key-store
+make more then 2 call in 5sec, than you can see "Breaker is closed" after short time it's half open again until it's fails again...
+kubectl scale --replicas=1 deployment/key-store		# Reopen the key-store
+
+
+

@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resiliency1-good
+  name: resiliency1-good-cb
   labels:
-    app: resiliency1-good
+    app: resiliency1-good-cb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: resiliency1-good
+      app: resiliency1-good-cb
       tier: frontend
   template:
     metadata:
       labels:
-        app: resiliency1-good
+        app: resiliency1-good-cb
         tier: frontend
     spec:
       containers:
-      - name: resiliency1-good
-        image: resiliency_1-good
+      - name: resiliency1-good-cb
+        image: resiliency_1-good-cb
         imagePullPolicy: IfNotPresent
         env:
         - name: KEY_VALUE_STORE_HOST
@@ -34,14 +34,14 @@ kind: Service
 apiVersion: v1
 
 metadata:
-  name: resiliency1-good
+  name: resiliency1-good-cb
   labels:
-    app: resiliency1-good
+    app: resiliency1-good-cb
     tier: frontend
 spec:
   type: NodePort
   selector: 
-    app: resiliency1-good
+    app: resiliency1-good-cb
     tier: frontend
   ports:
     - nodePort: 32200

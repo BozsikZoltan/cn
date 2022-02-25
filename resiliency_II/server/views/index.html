@@ -1,0 +1,13 @@
+<form id='form_set' method="POST" action="/set">
+    <label for="set_text_key">Set key: </label>
+    <input id="set_text_key" type="text" name="set_text_key" required>
+    <label for="set_text_value">Set value: </label>
+    <input id="set_text_value" type="number" name="set_text_value" required>
+    <input type="submit" value="OK">
+</form>
+<form id='form_delete' method="POST" action="/delete">
+    <label for="delete_text_key">Delete key:</label>
+    <input id="delete_text_key" type="text" name="delete_text_key" required>
+    <input type="submit" value="OK">
+</form>
+<h1 id="head1"><%= items %></h1>

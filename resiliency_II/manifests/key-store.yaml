@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resiliency2-key-store
+  labels:
+    app: resiliency2-key-store
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resiliency2-key-store
+  template:
+    metadata:
+      labels:
+        app: resiliency2-key-store
+        tier: backend
+    spec:
+      containers:
+      - name: resiliency2-key-store
+        image: resiliency2-key-store
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: WINDOW_SIZE_IN_MINUTE
+          value: "0.5"
+        - name: REQUEST_PER_WINDOW
+          value: "3"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 7480
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: resiliency2-key-store
+  labels:
+    app: resiliency2-key-store
+    tier: backend
+spec:
+  ports:
+  - port: 7480
+    targetPort: 7480
+  selector:
+    app: resiliency2-key-store
+    tier: backend
+    
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resiliency2-server-all
+  labels:
+    app: resiliency2-server-all
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resiliency2-server-all
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: resiliency2-server-all
+        tier: frontend
+    spec:
+      containers:
+      - name: resiliency2-server-all
+        image: resiliency2-server-all
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KEY_VALUE_STORE_HOST
+          value: "$(RESILIENCY2_KEY_STORE_SERVICE_HOST)"
+        - name: KEY_VALUE_STORE_PORT
+          value: "$(RESILIENCY2_KEY_STORE_SERVICE_PORT)"
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: resiliency2-server-all
+  labels:
+    app: resiliency2-server-all
+    tier: frontend
+spec:
+  type: NodePort
+  selector:
+    app: resiliency2-server-all
+    tier: frontend
+  ports:
+    - nodePort: 32210
+      port: 8080
+

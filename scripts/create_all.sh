@@ -8,3 +8,5 @@ cd ../idempotency
 ./create.sh
 cd ../resiliency_I
 ./create.sh
+cd ../resiliency_II
+./create.sh

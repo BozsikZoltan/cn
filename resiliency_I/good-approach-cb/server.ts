@@ -58,7 +58,7 @@ app.post('/delete', async function (req: any, res: any) {
  * Async function to get the map form the key-store
  * */
 async function getMap() {
-    const result = await withCircuitBreaker(getFunction)
+    const result = await withCircuitBreaker(getFunction);
 
     if (result === null || result === undefined) {
         return new Map();

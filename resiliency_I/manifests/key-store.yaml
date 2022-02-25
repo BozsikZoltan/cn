@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: key-store
+  name: resiliency1-key-store
   labels:
-    app: key-store
+    app: resiliency1-key-store
     tier: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: key-store
+      app: resiliency1-key-store
   template:
     metadata:
       labels:
-        app: key-store
+        app: resiliency1-key-store
         tier: backend
     spec:
       containers:
-      - name: key-store
-        image: key-store
+      - name: resiliency1-key-store
+        image: resiliency1-key-store
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -32,14 +32,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: key-store
+  name: resiliency1-key-store
   labels:
-    app: key-store
+    app: resiliency1-key-store
     tier: backend
 spec:
   ports:
   - port: 7480
     targetPort: 7480
   selector:
-    app: key-store
+    app: resiliency1-key-store
     tier: backend

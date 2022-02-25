@@ -18,13 +18,13 @@ spec:
     spec:
       containers:
       - name: resiliency1-bad
-        image: resiliency_1-bad
+        image: resiliency1-bad
         imagePullPolicy: IfNotPresent
         env:
         - name: KEY_VALUE_STORE_HOST
-          value: "$(KEY_STORE_SERVICE_HOST)"
+          value: "$(RESILIENCY1_KEY_STORE_SERVICE_HOST)"
         - name: KEY_VALUE_STORE_PORT
-          value: "$(KEY_STORE_SERVICE_PORT)"
+          value: "$(RESILIENCY1_KEY_STORE_SERVICE_PORT)"
         ports:
         - containerPort: 8080
 

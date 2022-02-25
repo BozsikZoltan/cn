@@ -65,10 +65,11 @@ minikube start --vm-driver="virtualbox"
 
 ## Build images
 eval $(minikube docker-env)
-docker build -t key-store key-store/.
-docker build -t resiliency_1-good-eb good-approach-eb/.
-docker build -t resiliency_1-good-cb good-approach-cb/.
-docker build -t resiliency_1-bad bad-approach/.
+docker build -t resiliency1-key-store key-store/.
+docker build -t resiliency1-good good-approach/.
+docker build -t resiliency1-good-eb good-approach-eb/.
+docker build -t resiliency1-good-cb good-approach-cb/.
+docker build -t resiliency1-bad bad-approach/.
 
 ## Setup deployments for single-single test scenario
 kubectl apply -f manifests/key-store.yaml
@@ -77,6 +78,7 @@ kubectl apply -f manifests/good-approach-cb.yaml
 kubectl apply -f manifests/bad-approach.yaml
 
 ## Open in browser
+minikube service resiliency1-good
 minikube service resiliency1-good-eb
 minikube service resiliency1-good-cb
 minikube service resiliency1-bad

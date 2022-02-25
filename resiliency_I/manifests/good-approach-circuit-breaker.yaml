@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resiliency1-good-eb
+  name: resiliency1-good-circuit-breaker
   labels:
-    app: resiliency1-good-eb
+    app: resiliency1-good-circuit-breaker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: resiliency1-good-eb
+      app: resiliency1-good-circuit-breaker
       tier: frontend
   template:
     metadata:
       labels:
-        app: resiliency1-good-eb
+        app: resiliency1-good-circuit-breaker
         tier: frontend
     spec:
       containers:
-      - name: resiliency1-good-eb
-        image: resiliency1-good-eb
+      - name: resiliency1-good-circuit-breaker
+        image: resiliency1-good-circuit-breaker
         imagePullPolicy: IfNotPresent
         env:
         - name: KEY_VALUE_STORE_HOST
@@ -34,15 +34,15 @@ kind: Service
 apiVersion: v1
 
 metadata:
-  name: resiliency1-good-eb
+  name: resiliency1-good-circuit-breaker
   labels:
-    app: resiliency1-good-eb
+    app: resiliency1-good-circuit-breaker
     tier: frontend
 spec:
   type: NodePort
   selector: 
-    app: resiliency1-good-eb
+    app: resiliency1-good-circuit-breaker
     tier: frontend
   ports:
-    - nodePort: 32201
+    - nodePort: 32202
       port: 8080

@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resiliency1-good-cb
+  name: resiliency1-good-exponential-backoff
   labels:
-    app: resiliency1-good-cb
+    app: resiliency1-good-exponential-backoff
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: resiliency1-good-cb
+      app: resiliency1-good-exponential-backoff
       tier: frontend
   template:
     metadata:
       labels:
-        app: resiliency1-good-cb
+        app: resiliency1-good-exponential-backoff
         tier: frontend
     spec:
       containers:
-      - name: resiliency1-good-cb
-        image: resiliency1-good-cb
+      - name: resiliency1-good-exponential-backoff
+        image: resiliency1-good-exponential-backoff
         imagePullPolicy: IfNotPresent
         env:
         - name: KEY_VALUE_STORE_HOST
@@ -34,15 +34,15 @@ kind: Service
 apiVersion: v1
 
 metadata:
-  name: resiliency1-good-cb
+  name: resiliency1-good-exponential-backoff
   labels:
-    app: resiliency1-good-cb
+    app: resiliency1-good-exponential-backoff
     tier: frontend
 spec:
   type: NodePort
   selector: 
-    app: resiliency1-good-cb
+    app: resiliency1-good-exponential-backoff
     tier: frontend
   ports:
-    - nodePort: 32202
+    - nodePort: 32201
       port: 8080

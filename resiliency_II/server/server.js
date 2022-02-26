@@ -56,14 +56,15 @@ app.post('/delete', async function (req, res) {
  * Async function to get the map form the key-store
  * */
 async function getMap() {
-    let res;
-    await client.get('/get').then(response => res = new Map(response.data)
+    return await client.get('/get').then(response => {
+            const result = new Map(response.data)
+            console.log(result)
+            return result;
+        }
     ).catch(error => {
         console.error(error.message);
-        res = null;
+        return null;
     })
-
-    return res;
 }
 
 /**

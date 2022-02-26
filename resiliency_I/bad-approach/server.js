@@ -59,7 +59,7 @@ async function getMap() {
     let res;
     await client.get('/get').then(response => res = new Map(response.data)
     ).catch(error => {
-        console.error(error);
+        console.error(error.message);
         res = null;
     })
 
@@ -74,7 +74,7 @@ async function setValue(key, value) {
         "key": key,
         "value": value
     }).then(response => console.log(response.data)
-    ).catch(error => console.error(error));
+    ).catch(error => console.error(error.message));
 }
 
 /**
@@ -84,7 +84,7 @@ async function deleteKey(key) {
     await client.post('/delete', {
         "key": key
     }).then(response => console.log(response.data)
-    ).catch(error => console.error(error));
+    ).catch(error => console.error(error.message));
 }
 
 /**

@@ -64,10 +64,7 @@ async function getMap() {
         return new Map();
     }
     // @ts-ignore
-    const map = new Map(result.data);
-    console.log(map);
-
-    return map;
+    return new Map(result.data);
 }
 
 /**

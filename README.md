@@ -2,10 +2,16 @@
 
 ## Patters
 
-5. Immutability
-6. Idempotency
-7. Resiliency I.
-8. Resiliency II.
+- Immutability
+- Idempotency
+- Resiliency I.
+ - Circuit breaker
+ - Exponential-backoff (Retry)
+- Resiliency II.
+ - Rate limiter (Throttle & Debounce)
+- Architectural
+ - Loose coupling
+ - Hexagonal
 
 ## Readme files
-Every patter directory contains a README file. These files start with the basic command, and end with Hints.    
+Every patter directory contains a README file. These files start with the basic command, and end with Hints.

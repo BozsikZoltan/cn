@@ -4,7 +4,8 @@ const app = express();
 const axios = require('axios');
 const client = axios.create({
     //baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
-    baseURL: 'http://localhost' + ':' + 7480
+    baseURL: 'http://localhost' + ':' + 7480 //key-value store
+    //baseURL: 'http://localhost' + ':' + 7280   //queue
 });
 
 app.set('view engine', 'html');
@@ -23,7 +24,8 @@ app.use(bodyParser.urlencoded({
  * Get method
  * */
 app.get('/', async function (req, res) {
-    res.render('index', {items: mapEntriesToString(await getMap())});
+    //  res.render('index', {items: mapEntriesToString(await getMap())});
+    res.render('index', {items: await sendTo("get", null, null)});
 });
 
 /**
@@ -49,7 +51,8 @@ app.post('/delete', async function (req, res) {
  * */
 async function getMap() {
     let res;
-    await client.get('/get').then(response => res = new Map(response.data)
+    await client.get('/get').then(
+        response => res = response.data
     ).catch(error => {
         console.error(error.message);
         res = null;
@@ -62,25 +65,20 @@ async function getMap() {
  * Async function to set key in the key-store
  * */
 async function sendTo(action, key, value) {
+    let res;
+
     await client.post('/action', {
         "action": action,
         "key": key,
         "value": value
-    }).then(response => console.log(response.data)
-    ).catch(error => console.error(error.message));
-}
+    }).then(
+        response => res = response.data
+    ).catch(error => {
+        console.error(error.message);
+        res = null;
+    })
 
-/**
- * Converts map to Array
- * */
-function mapEntriesToString(data) {
-    if (data === null) {
-        return;
-    }
-
-    return Array
-        .from(data.entries(), ([k, v]) => `{${k}:${v}}`)
-        .join(" ; ");
+    return res;
 }
 
 app.listen(process.env.PORT || 8080, () => {

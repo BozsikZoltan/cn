@@ -28,38 +28,40 @@ app.use(bodyParser.json())
  * */
 const map = new Map();
 
-function actionGet(res) {
-    res.end(JSON.stringify(Array.from(map.entries())));
+/**
+ * Action router
+ * */
+function performAction(res) {
+    const key = res.key;
+    const value = res.value;
+    const action = res.action;
+
+    if (action === "set") {
+        actionSet(key, value);
+    } else if (action === "get") {
+        actionGet();
+    } else if (action === "delete") {
+        actionDelete(key);
+    }
 }
 
 /**
- * Get method
+ * Function for get action
  * */
-app.get('/get', (req, res) => {
-    actionGet(res);
-});
+function actionGet() {
+    console.log("Get invoked!")
+    sendTo(mapEntriesToString());
+}
 
 /**
- * Action method
+ * Function for set action
  * */
-app.post('/action', function (req, res) {
-    const key = req.body.key;
-    const value = req.body.value;
-    const action = req.body.action;
-
-    if (action === "set") {
-        actionSet(key, value, res);
-    } else if (action === "get") {
-        res.end(mapEntriesToString());
-    } else if (action === "delete") {
-        actionDelete(key, res);
-    }
-});
-
-function actionSet(key, value, res, previous) {
+function actionSet(key, value) {
+    console.log("Set invoked!")
     if (key === null || value === null) {
-        res.end(mapEntriesToString());
+        return;
     }
+    let previous;
 
     if (map.has(key)) {
         previous = map.get(key);
@@ -68,19 +70,20 @@ function actionSet(key, value, res, previous) {
     map.set(key, value);
 
     console.log("(" + key + ") key set: " + previous + "-->" + map.get(key));
-    res.end(mapEntriesToString());
 }
 
-function actionDelete(key, res) {
+/**
+ * Function for delete action
+ * */
+function actionDelete(key) {
+    console.log("Delete invoked!")
     let previous;
 
     if (map.has(key)) {
         previous = map.get(key);
-        map.delete(key)
+        map.delete(key);
         console.log("(" + key + ") key delete: " + previous);
     }
-
-    res.end();
 }
 
 /**
@@ -91,6 +94,42 @@ function mapEntriesToString() {
         .from(map.entries(), ([k, v]) => `{${k}:${v}}`)
         .join(" ; ");
 }
+
+/**
+ * Push message to frontend queue
+ * */
+async function sendTo(data) {
+    await client.post('/pushToFrontendQueue', {"data": data}
+    ).catch(error => {
+        console.error(error.message);
+    })
+}
+
+/**
+ * Get message from backend queue
+ * */
+async function getFromFrontendQueue() {
+    let res;
+    await client.get('/getFromBackendQueue'
+    ).then(response => res = response.data
+    ).catch(error => {
+        console.error(error.message);
+        res = null;
+    })
+
+    return res;
+}
+
+/**
+ * Async method to check tasks
+ * */
+schedule.scheduleJob('*/1 * * * * *', async function () {
+    let res = await getFromFrontendQueue();
+
+    if (res !== undefined && res !== "" && res !== null) {
+        performAction(res);
+    }
+});
 
 app.listen(process.env.PORT || 7480, () => {
     console.log("Node server started");

@@ -4,8 +4,8 @@ const app = express();
 const axios = require('axios');
 const client = axios.create({
     //baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
-    baseURL: 'http://localhost' + ':' + 7480 //key-value store
-    //baseURL: 'http://localhost' + ':' + 7280   //queue
+    //baseURL: 'http://localhost' + ':' + 7480 //key-value store
+    baseURL: 'http://localhost' + ':' + 7280   //queue
 });
 
 app.set('view engine', 'html');
@@ -24,8 +24,7 @@ app.use(bodyParser.urlencoded({
  * Get method
  * */
 app.get('/', async function (req, res) {
-    //  res.render('index', {items: mapEntriesToString(await getMap())});
-    res.render('index', {items: await sendTo("get", null, null)});
+    res.render('index', {items: await getValues()});
 });
 
 /**
@@ -47,38 +46,49 @@ app.post('/delete', async function (req, res) {
 });
 
 /**
- * Async function to get the map form the key-store
+ * Getter flow
  * */
-async function getMap() {
-    let res;
-    await client.get('/get').then(
-        response => res = response.data
-    ).catch(error => {
-        console.error(error.message);
-        res = null;
-    })
-
-    return res;
+async function getValues() {
+    await sendTo("get", null, null);
+    await sleep(2500);
+    return await getGetFromFrontendQueue();
 }
 
 /**
- * Async function to set key in the key-store
+ * To wait for sync - it could be solved with websocket or many other features.
  * */
-async function sendTo(action, key, value) {
-    let res;
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
-    await client.post('/action', {
-        "action": action,
-        "key": key,
-        "value": value
-    }).then(
-        response => res = response.data
+/**
+ * Get message from frontend queue
+ * */
+async function getGetFromFrontendQueue() {
+    let res;
+    await client.get('/getFromFrontendQueue'
+    ).then(response => res = response.data
     ).catch(error => {
         console.error(error.message);
         res = null;
     })
 
-    return res;
+    return res.data;
+}
+
+/**
+ * Push message to backend queue
+ * */
+function sendTo(action, key, value) {
+    client.post('/pushToBackendQueue', {
+        "action": action,
+        "key": key,
+        "value": value
+    }).catch(error => {
+        console.error(error.message);
+    })
 }
 
 app.listen(process.env.PORT || 8080, () => {

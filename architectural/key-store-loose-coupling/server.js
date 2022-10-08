@@ -1,6 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const schedule = require('node-schedule');
+const axios = require('axios');
+const client = axios.create({
+    //baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
+    baseURL: 'http://localhost' + ':' + 7280   //queue
+});
+
 
 app.set('view engine', 'html');
 
@@ -21,11 +28,15 @@ app.use(bodyParser.json())
  * */
 const map = new Map();
 
+function actionGet(res) {
+    res.end(JSON.stringify(Array.from(map.entries())));
+}
+
 /**
  * Get method
  * */
 app.get('/get', (req, res) => {
-    res.end(JSON.stringify(Array.from(map.entries())));
+    actionGet(res);
 });
 
 /**
@@ -38,7 +49,8 @@ app.post('/action', function (req, res) {
 
     if (action === "set") {
         actionSet(key, value, res);
-
+    } else if (action === "get") {
+        res.end(mapEntriesToString());
     } else if (action === "delete") {
         actionDelete(key, res);
     }

@@ -57,8 +57,8 @@ app.post('/delete', async function (req, res) {
  * */
 async function getMap() {
     return await client.get('/get').then(response => {
-            const result = new Map(response.data)
-            console.log(result)
+            const result = new Map(response.data);
+            console.log(result);
             return result;
         }
     ).catch(error => {
@@ -84,9 +84,9 @@ async function setValue(key, value) {
  * Async function to set key in the key-store
  * */
 async function deleteKey(key) {
-    await client.post('/delete', {
-        "key": key
-    }).then(response => console.log(response.data)
+    await client.post('/delete',
+        {"key": key}
+    ).then(response => console.log(response.data)
     ).catch(error => {
         console.error(error.message);
     });

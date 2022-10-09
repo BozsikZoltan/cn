@@ -72,8 +72,7 @@ app.post('/decrement', function (req, res) {
  * */
 function generateBetween(min, max) {
     return Math.floor(
-        Math.random() * (max - min) + min
-    )
+        Math.random() * (max - min) + min);
 }
 
 /**

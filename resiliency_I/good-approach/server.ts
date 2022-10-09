@@ -98,9 +98,9 @@ async function setValue(key: string, value: number) {
  * */
 async function deleteKey(key: string) {
     console.log('Delete key invoked! ' + key);
-    await client.post('/delete', {
-        "key": key
-    }).then()
+    await client.post('/delete',
+        {"key": key}
+    ).then();
 }
 
 /**

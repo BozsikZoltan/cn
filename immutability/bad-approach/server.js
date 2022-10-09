@@ -16,14 +16,14 @@ app.use(bodyParser.urlencoded({
 /**
  * Storage
  * */
-const inArray = []
+const inArray = [];
 
 /**
  * Add method
  * */
 app.post('/', function (req, res) {
-    inArray.push(req.body.random_text)
-    return res.redirect('/')
+    inArray.push(req.body.random_text);
+    return res.redirect('/');
 });
 
 /**

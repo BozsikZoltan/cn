@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // Apply the rate limiting middleware to all requests
 app.use(limit);
@@ -70,7 +70,7 @@ app.post('/delete', function (req, res) {
 
     if (map.has(key)) {
         previous = map.get(key);
-        map.delete(key)
+        map.delete(key);
         console.log("(" + key + ") key delete: " + previous);
     }
 

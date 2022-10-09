@@ -38,7 +38,7 @@ app.post('/', function (req, res) {
     client.rpush(['cloud-native:immutability', req.body.random_text], function (err, reply) {
         console.log(reply); //Logs the array size
     });
-    return res.redirect('/')
+    return res.redirect('/');
 });
 
 /**

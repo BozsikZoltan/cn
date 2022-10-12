@@ -25,7 +25,7 @@ const map = new Map();
  * Get method
  * */
 app.get('/get', (req, res) => {
-    res.end(JSON.stringify(Array.from(map.entries())));
+    res.end(mapEntriesToString());
 });
 
 /**
@@ -49,7 +49,7 @@ app.post('/set', function (req, res) {
     console.log("(" + key + ") key set: " + previous + "-->" + map.get(key));
     res.end(mapEntriesToString());
 });
-key
+
 /**
  * Delete method
  * */
@@ -63,7 +63,7 @@ app.post('/delete', function (req, res) {
         console.log("(" + key + ") key delete: " + previous);
     }
 
-    res.end();
+    res.end(mapEntriesToString());
 });
 
 /**

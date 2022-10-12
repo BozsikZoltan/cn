@@ -15,6 +15,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+/**
+ * Entry point
+ * */
 app.use('/', routes);
 
 app.listen(process.env.PORT || 8080, () => {

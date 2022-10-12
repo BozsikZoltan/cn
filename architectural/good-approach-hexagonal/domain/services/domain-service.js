@@ -1,36 +1,27 @@
-const store = require('../../framework/store');
+const store = require('../../framework/rest/store');
+const logger = require('../../framework/grcp/logger');
+const {promiseCallback} = require("async/internal/promiseCallback");
 
 /**
  * Business function to get keys
  * */
 exports.getKeys = async () => {
-    return {items: mapEntriesToString(await store.getKeys())};
+    let items = await store.getKeys();
+    logger.runLogInfo("GetKeys returns: " + items, promiseCallback());
+
+    return {items: items};
 };
 
 /**
  * Business function to set key
  * */
 exports.setKey = async (req) => {
-    await store.setKey(req.body.set_text_key, req.body.set_text_value);
+    logger.runLogInfo("SetKey returns: " + await store.setKey(req.body.set_text_key, req.body.set_text_value), promiseCallback());
 };
 
 /**
  * Business function to delete key
  * */
 exports.deleteKey = async (req) => {
-    await store.deleteKey(req.body.delete_text_key);
+    logger.runLogInfo("DeleteKey returns: " + await store.deleteKey(req.body.delete_text_key), promiseCallback());
 };
-
-/**
- * Converts map to Array
- * */
-function mapEntriesToString(data) {
-    if (data === null || data === undefined) {
-        return;
-    }
-    let map = new Map(data);
-
-    return Array
-        .from(map.entries(), ([k, v]) => `{${k}:${v}}`)
-        .join(" ; ");
-}

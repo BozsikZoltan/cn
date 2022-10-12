@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: architectural-queue-loose-coupled
+  labels:
+    app: architectural-queue-loose-coupled
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: architectural-queue-loose-coupled
+  template:
+    metadata:
+      labels:
+        app: architectural-queue-loose-coupled
+        tier: backend
+    spec:
+      containers:
+      - name: architectural-queue-loose-coupled
+        image: architectural-queue-loose-coupled
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 7280
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: architectural-queue-loose-coupled
+  labels:
+    app: architectural-queue-loose-coupled
+    tier: backend
+spec:
+  ports:
+  - port: 7280
+    targetPort: 7280
+  selector:
+    app: architectural-queue-loose-coupled
+    tier: backend
+    
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: architectural-key-store-loose-coupled
+  labels:
+    app: architectural-key-store-loose-coupled
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: architectural-key-store-loose-coupled
+  template:
+    metadata:
+      labels:
+        app: architectural-key-store-loose-coupled
+        tier: backend
+    spec:
+      containers:
+      - name: architectural-key-store-loose-coupled
+        image: architectural-key-store-loose-coupled
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: QUEUE_HOST
+          value: "$(ARCHITECTURAL_QUEUE_LOOSE_COUPLED_SERVICE_HOST)"
+        - name: QUEUE_PORT
+          value: "$(ARCHITECTURAL_QUEUE_LOOSE_COUPLED_SERVICE_PORT)"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 7480
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: architectural-key-store-loose-coupled
+  labels:
+    app: architectural-key-store-loose-coupled
+    tier: backend
+spec:
+  ports:
+  - port: 7480
+    targetPort: 7480
+  selector:
+    app: architectural-key-store-loose-coupled
+    tier: backend
+    
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: architectural-loose-coupled
+  labels:
+    app: architectural-loose-coupled
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: architectural-loose-coupled
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: architectural-loose-coupled
+        tier: frontend
+    spec:
+      containers:
+      - name: architectural-loose-coupled
+        image: architectural-loose-coupled
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: QUEUE_HOST
+          value: "$(ARCHITECTURAL_QUEUE_LOOSE_COUPLED_SERVICE_HOST)"
+        - name: QUEUE_PORT
+          value: "$(ARCHITECTURAL_QUEUE_LOOSE_COUPLED_SERVICE_PORT)"
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: architectural-loose-coupled
+  labels:
+    app: architectural-loose-coupled
+    tier: frontend
+spec:
+  type: NodePort
+  selector: 
+    app: architectural-loose-coupled
+    tier: frontend
+  ports:
+    - nodePort: 32222
+      port: 8080

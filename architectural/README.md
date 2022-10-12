@@ -59,7 +59,7 @@
 ## Get application logs from pod
 ```kubectl logs [options] <pod_name>```										# [options] {-f (stream)}
 
-# Hints (from resiliency I directory)
+# Hints (from architectural directory)
 
 ## Run server
 ```minikube start --vm-driver="virtualbox"```

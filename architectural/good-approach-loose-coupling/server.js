@@ -3,9 +3,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const axios = require('axios');
 const client = axios.create({
-    //baseURL: 'http://' + process.env.KEY_VALUE_STORE_HOST + ':' + process.env.KEY_VALUE_STORE_PORT
-    //baseURL: 'http://localhost' + ':' + 7480 //key-value store
-    baseURL: 'http://localhost' + ':' + 7280   //queue
+    baseURL: 'http://' + process.env.QUEUE_HOST + ':' + process.env.QUEUE_PORT
+    //baseURL: 'http://localhost' + ':' + 7280   //queue
 });
 
 app.set('view engine', 'html');

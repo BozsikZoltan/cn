@@ -1,4 +1,4 @@
-const PATH = __dirname + '/../protos/logger.proto';
+const PATH = __dirname + '/protos/logger.proto';
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 /**
@@ -48,7 +48,7 @@ function logError(call, callback) {
  * Debug logging function.
  * */
 function performDebugLogging(loggerRequest) {
-    console.debug(formatMessage(loggerRequest))
+    console.debug(formatMessage(loggerRequest, 'DEBUG'))
     return true;
 }
 
@@ -56,7 +56,7 @@ function performDebugLogging(loggerRequest) {
  * Info logging function.
  * */
 function performInfoLogging(loggerRequest) {
-    console.info(formatMessage(loggerRequest))
+    console.info(formatMessage(loggerRequest, 'INFO'))
     return true;
 }
 
@@ -64,7 +64,7 @@ function performInfoLogging(loggerRequest) {
  * Warn logging function.
  * */
 function performWarnLogging(loggerRequest) {
-    console.warn(formatMessage(loggerRequest))
+    console.warn(formatMessage(loggerRequest, 'WARN'))
     return true;
 }
 
@@ -72,15 +72,15 @@ function performWarnLogging(loggerRequest) {
  * Error logging function.
  * */
 function performErrorLogging(loggerRequest) {
-    console.error(formatMessage(loggerRequest))
+    console.error(formatMessage(loggerRequest, 'ERROR'))
     return true;
 }
 
 /**
  * Message formatter function.
  * */
-function formatMessage(loggerRequest) {
-    return loggerRequest.serviceName + ': ' + loggerRequest.message
+function formatMessage(loggerRequest, severity) {
+    return loggerRequest.serviceName + '[' + severity + ']' + ': ' + loggerRequest.message
 }
 
 /**
@@ -101,7 +101,10 @@ function getServer() {
  * Creates the server.
  * */
 const loggerServer = getServer();
-loggerServer.bindAsync('localhost:7080', grpc.ServerCredentials.createInsecure(), () => {
+loggerServer.bindAsync(
+    '0.0.0.0:7080',
+    //process.env.HOST + ':' + process.env.PORT,
+    grpc.ServerCredentials.createInsecure(), () => {
     loggerServer.start();
 });
 

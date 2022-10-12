@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "hu.bme.bz.logger";
+option java_outer_classname = "Logger";
+option objc_class_prefix = "Logger";
+
+package logger;
+
+service Logger {
+  /**
+   * Info logger
+   * */
+  rpc LogDebug(LoggerRequest) returns (LoggerResponse) {}
+
+  /**
+   * Info logger
+   * */
+  rpc LogInfo(LoggerRequest) returns (LoggerResponse) {}
+
+
+  /**
+   * Warn logger
+   * */
+  rpc LogWarn(LoggerRequest) returns (LoggerResponse) {}
+
+
+  /**
+   * Error logger
+   * */
+  rpc LogError(LoggerRequest) returns (LoggerResponse) {}
+}
+
+/**
+ * Request object.
+ * String field: ServiceName.
+ * String field: Message.
+ * */
+message LoggerRequest {
+  string serviceName   = 1;
+  string  message = 2;
+}
+
+/**
+ * Response object.
+ * */
+message LoggerResponse {}

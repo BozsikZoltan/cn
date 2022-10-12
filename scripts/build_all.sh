@@ -11,3 +11,5 @@ cd ../resiliency_I
 ./build.sh
 cd ../resiliency_II
 ./build.sh
+cd ../architectural
+./build.sh
